@@ -1,0 +1,12 @@
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.ZarinPal\Views\Configure.cshtml
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.ZarinPal\Views\PaymentInfo.cshtml
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.ZarinPal\web.config
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.ZarinPal\Description.txt
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.ZarinPal\logo.jpg
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.ZarinPal\Nop.Plugin.Payments.ZarinPal.dll.config
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.ZarinPal\Nop.Plugin.Payments.ZarinPal.dll
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.ZarinPal\Nop.Plugin.Payments.ZarinPal.pdb
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Plugins\Nop.Plugin.Payments.ZarinPal\obj\Debug\Nop.Plugin.Payments.ZarinPal.csproj.App.config
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Plugins\Nop.Plugin.Payments.ZarinPal\obj\Debug\Nop.Plugin.Payments.ZarinPal.csprojResolveAssemblyReference.cache
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Plugins\Nop.Plugin.Payments.ZarinPal\obj\Debug\Nop.Plugin.Payments.ZarinPal.dll
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Plugins\Nop.Plugin.Payments.ZarinPal\obj\Debug\Nop.Plugin.Payments.ZarinPal.pdb

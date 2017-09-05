@@ -1,0 +1,12 @@
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Plugins\Nop.Plugin.Payments.MellatBank\obj\Debug\Nop.Plugin.Payments.MellatBank.csproj.App.config
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Plugins\Nop.Plugin.Payments.MellatBank\obj\Debug\Nop.Plugin.Payments.MellatBank.csprojResolveAssemblyReference.cache
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.MellatBank\Views\Configure.cshtml
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.MellatBank\Views\PaymentInfo.cshtml
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.MellatBank\web.config
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.MellatBank\Description.txt
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.MellatBank\logo.jpg
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.MellatBank\Nop.Plugin.Payments.MellatBank.dll.config
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.MellatBank\Nop.Plugin.Payments.MellatBank.dll
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.MellatBank\Nop.Plugin.Payments.MellatBank.pdb
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Plugins\Nop.Plugin.Payments.MellatBank\obj\Debug\Nop.Plugin.Payments.MellatBank.dll
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Plugins\Nop.Plugin.Payments.MellatBank\obj\Debug\Nop.Plugin.Payments.MellatBank.pdb

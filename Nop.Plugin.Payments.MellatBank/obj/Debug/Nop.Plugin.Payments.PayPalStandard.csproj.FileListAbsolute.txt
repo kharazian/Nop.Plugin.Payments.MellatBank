@@ -1,0 +1,11 @@
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.PayPalStandard\Views\Configure.cshtml
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.PayPalStandard\Views\PaymentInfo.cshtml
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.PayPalStandard\web.config
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.PayPalStandard\Description.txt
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.PayPalStandard\logo.jpg
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.PayPalStandard\Nop.Plugin.Payments.PayPalStandard.dll.config
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.PayPalStandard\Nop.Plugin.Payments.PayPalStandard.dll
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Presentation\Nop.Web\Plugins\Payments.PayPalStandard\Nop.Plugin.Payments.PayPalStandard.pdb
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Plugins\Nop.Plugin.Payments.PayPalStandard\obj\Debug\Nop.Plugin.Payments.PayPalStandard.csproj.App.config
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Plugins\Nop.Plugin.Payments.PayPalStandard\obj\Debug\Nop.Plugin.Payments.PayPalStandard.dll
+C:\Users\a.akhavan\Source\Repos\Commerce\src\Plugins\Nop.Plugin.Payments.PayPalStandard\obj\Debug\Nop.Plugin.Payments.PayPalStandard.pdb
