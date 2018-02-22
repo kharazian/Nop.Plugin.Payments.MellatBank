@@ -77,6 +77,9 @@ namespace Nop.Plugin.Payments.MellatBank.Controllers
             var MellatBankPaymentSettings = _settingService.LoadSetting<MellatBankPaymentSettings>(storeScope);
 
             var model = new ConfigurationModel();
+            model.TerminalId = MellatBankPaymentSettings.TerminalId;
+            model.UserName = MellatBankPaymentSettings.UserName;
+            model.UserPassword = MellatBankPaymentSettings.UserPassword;
             model.BusinessPhoneNumber = MellatBankPaymentSettings.BusinessPhoneNumber;
             model.BusinessEmail = MellatBankPaymentSettings.BusinessEmail;
             model.PdtValidateOrderTotal = MellatBankPaymentSettings.PdtValidateOrderTotal;
@@ -112,6 +115,9 @@ namespace Nop.Plugin.Payments.MellatBank.Controllers
             var MellatBankPaymentSettings = _settingService.LoadSetting<MellatBankPaymentSettings>(storeScope);
 
             //save settings
+            MellatBankPaymentSettings.TerminalId = model.TerminalId;
+            MellatBankPaymentSettings.UserName = model.UserName;
+            MellatBankPaymentSettings.UserPassword = model.UserPassword;
             MellatBankPaymentSettings.BusinessPhoneNumber = model.BusinessPhoneNumber;
             MellatBankPaymentSettings.BusinessEmail = model.BusinessEmail;
             MellatBankPaymentSettings.PdtValidateOrderTotal = model.PdtValidateOrderTotal;
@@ -123,6 +129,11 @@ namespace Nop.Plugin.Payments.MellatBank.Controllers
             /* We do not clear cache after each setting update.
              * This behavior can increase performance because cached settings will not be cleared 
              * and loaded from database after each update */
+
+
+            _settingService.SaveSettingOverridablePerStore(MellatBankPaymentSettings, x => x.TerminalId, model.TerminalId_OverrideForStore, storeScope, false);
+            _settingService.SaveSettingOverridablePerStore(MellatBankPaymentSettings, x => x.UserName, model.UserName_OverrideForStore, storeScope, false);
+            _settingService.SaveSettingOverridablePerStore(MellatBankPaymentSettings, x => x.UserPassword, model.UserPassword_OverrideForStore, storeScope, false);
 
             _settingService.SaveSettingOverridablePerStore(MellatBankPaymentSettings, x => x.BusinessPhoneNumber, model.BusinessPhoneNumber_OverrideForStore, storeScope, false);
             _settingService.SaveSettingOverridablePerStore(MellatBankPaymentSettings, x => x.BusinessEmail, model.BusinessEmail_OverrideForStore, storeScope, false);

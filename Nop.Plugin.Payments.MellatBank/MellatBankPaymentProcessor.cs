@@ -563,10 +563,10 @@ namespace Nop.Plugin.Payments.MellatBank
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.AdditionalFee.Hint", "مبلغ هزینه مازاد جهت درج در فاکتور مشتری.");
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.TerminalId", "شماره درگاه بانک ملت");
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.TerminalId.Hint", "فعال کردن شماره درگاه بانک ملت");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.UserName", "شماره درگاه بانک ملت");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.UserName.Hint", "فعال کردن شماره درگاه بانک ملت");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.UserPassword", "شماره درگاه بانک ملت");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.UserPassword.Hint", "فعال کردن شماره درگاه بانک ملت");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.UserName", "نام کاربری درگاه بانک ملت");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.UserName.Hint", "فعال کردن نام کاربری درگاه بانک ملت");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.UserPassword", "رمز درگاه بانک ملت");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.UserPassword.Hint", "فعال کردن رمز درگاه بانک ملت");
 
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.BusinessPhoneNumber", "شماره تلفن فروشگاه");
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.BusinessPhoneNumber.Hint", "فعال کردن شماره تلفن فروشگاه");
