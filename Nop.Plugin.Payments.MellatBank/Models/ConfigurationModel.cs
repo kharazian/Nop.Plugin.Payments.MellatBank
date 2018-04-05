@@ -8,7 +8,7 @@ namespace Nop.Plugin.Payments.MellatBank.Models
         public int ActiveStoreScopeConfiguration { get; set; }
 
         [NopResourceDisplayName("Plugins.Payments.MellatBank.Fields.TerminalId")]
-        public bool TerminalId { get; set; }
+        public long TerminalId { get; set; }
         public bool TerminalId_OverrideForStore { get; set; }
 
         [NopResourceDisplayName("Plugins.Payments.MellatBank.Fields.UserName")]

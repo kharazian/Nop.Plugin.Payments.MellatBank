@@ -1,0 +1,50 @@
+﻿@{
+    Layout = ViewNames.ColumnsOneLayout;
+}
+@model TransactionError
+@using Nop.Plugin.Payments.MellatBank.Constants
+@using Nop.Plugin.Payments.MellatBank.Models
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+       خطا در انجام تراکنش
+    </h1>
+    <div class="pull-right">
+        <a href="@Url.RouteUrl("OrderDetails", new { orderID = @Model.OrderId })" class="btn bg-blue">
+            <i class="fa fa-plus-square">انتقال به صفحه خرید</i>
+        </a>
+    </div>
+</div>
+
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td>
+                                <p><b>       خطا در انجام تراکنش</b></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @Model.ErrorId 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @Model.ErrorMessage
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
