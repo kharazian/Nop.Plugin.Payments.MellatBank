@@ -23,13 +23,17 @@ using Nop.Services.Tax;
 using System.ServiceModel;
 using Nop.Plugin.Payments.MellatBank.wsMellatBank;
 using Nop.Services.Events;
+using Nop.Plugin.Payments.MellatBank.Models;
+using Nop.Plugin.Payments.MellatBank.Domain;
+using Nop.Web.Framework.Menu;
+using Nop.Plugin.Payments.MellatBank.Services;
 
 namespace Nop.Plugin.Payments.MellatBank
 {
     /// <summary>
     /// MellatBank payment processor
     /// </summary>
-    public class MellatBankPaymentProcessor : BasePlugin, IPaymentMethod
+    public class MellatBankPaymentProcessor : BasePlugin, IPaymentMethod, IAdminMenuPlugin
     {
         #region Constants
 
@@ -55,6 +59,10 @@ namespace Nop.Plugin.Payments.MellatBank
         private readonly MellatBankPaymentSettings _mellatBankPaymentSettings;
         private readonly IStoreContext _storeContext;
         private readonly IEventPublisher _eventPublisher;
+        private readonly MellatPeyment _mellatPeyment;
+        private readonly IWorkContext _workContext;
+        private readonly ITransactionService _transactionService;
+
 
         #endregion
 
@@ -72,7 +80,9 @@ namespace Nop.Plugin.Payments.MellatBank
             IWebHelper webHelper,
             MellatBankPaymentSettings MellatBankPaymentSettings,
             IStoreContext storeContext,
-            IEventPublisher eventPublisher)
+            IEventPublisher eventPublisher,
+            IWorkContext workContext,
+            ITransactionService transactionService)
         {
             this._currencySettings = currencySettings;
             this._httpContext = httpContext;
@@ -87,83 +97,16 @@ namespace Nop.Plugin.Payments.MellatBank
             this._mellatBankPaymentSettings = MellatBankPaymentSettings;
             this._storeContext = storeContext;
             this._eventPublisher = eventPublisher;
+            _mellatPeyment = new MellatPeyment();
+            this._workContext = workContext;
+            _transactionService = transactionService;
         }
 
         #endregion
 
         #region Utilities
 
-        /// <summary>
-        /// Gets MellatBank URL
-        /// </summary>
-        /// <returns></returns>
-        private string GetMellatBankUrl()
-        {
-            return "https://bpm.shaparak.ir/pgwchannel/services/pgw";
-        }
-        private string GetMellatBankRedirect()
-        {
-            return "https://bpm.shaparak.ir/pgwchannel/payment.mellat";
-        }
-        public string GetPdtPay(string callBackRedirect, long orderId, long amount, long saleReferenceId)
-        {
-            string StatusRe = string.Empty;
-            try
-            {
-                StatusRe = GetMellatBankService().bpPayRequest(_mellatBankPaymentSettings.TerminalId, _mellatBankPaymentSettings.UserName, _mellatBankPaymentSettings.UserPassword, orderId, amount, DateTime.Now.ToString("yyyyMMdd"), DateTime.Now.ToString("HHMMSS"), _storeContext.CurrentStore.Name, callBackRedirect, 0);
-            }
-            catch { }
 
-            return StatusRe;
-        }
-
-        public string GetPdtVerify(long orderId, long saleOrderId, long saleReferenceId)
-        {
-            string StatusRe = string.Empty;
-            try
-            {
-                StatusRe = GetMellatBankService().bpVerifyRequest(_mellatBankPaymentSettings.TerminalId, _mellatBankPaymentSettings.UserName, _mellatBankPaymentSettings.UserPassword, orderId, saleOrderId, saleReferenceId);
-            }
-            catch { }
-
-            return StatusRe;
-        }
-
-        public string GetPdtInquiry(long orderId, long saleOrderId, long saleReferenceId)
-        {
-            string StatusRe = string.Empty;
-            try
-            {
-                StatusRe = GetMellatBankService().bpInquiryRequest(_mellatBankPaymentSettings.TerminalId, _mellatBankPaymentSettings.UserName, _mellatBankPaymentSettings.UserPassword, orderId, saleOrderId, saleReferenceId);
-            }
-            catch { }
-
-            return StatusRe;
-        }
-
-        public string GetPdtSettle(long orderId, long saleOrderId, long saleReferenceId)
-        {
-            string StatusRe = string.Empty;
-            try
-            {
-                StatusRe = GetMellatBankService().bpSettleRequest(_mellatBankPaymentSettings.TerminalId, _mellatBankPaymentSettings.UserName, _mellatBankPaymentSettings.UserPassword, orderId, saleOrderId, saleReferenceId);
-            }
-            catch { }
-
-            return StatusRe;
-        }
-
-        public string GetPdtReversal(long orderId, long saleOrderId, long saleReferenceId)
-        {
-            string StatusRe = string.Empty;
-            try
-            {
-                StatusRe = GetMellatBankService().bpReversalRequest(_mellatBankPaymentSettings.TerminalId, _mellatBankPaymentSettings.UserName, _mellatBankPaymentSettings.UserPassword, orderId, saleOrderId, saleReferenceId);
-            }
-            catch { }
-
-            return StatusRe;
-        }
 
 
         /// <summary>
@@ -201,7 +144,7 @@ namespace Nop.Plugin.Payments.MellatBank
         /// </summary>
         /// <param name="postProcessPaymentRequest">Payment info required for an order processing</param>
         /// <param name="passProductNamesAndTotals">A value indicating whether to pass product names and totals</param>
-        private string GenerationCallBackUrl(PostProcessPaymentRequest postProcessPaymentRequest, bool passProductNamesAndTotals)
+        private string GenerationCallBackUrl(PostProcessPaymentRequest postProcessPaymentRequest, bool passProductNamesAndTotals, long transactionid)
         {
             var builder = new StringBuilder();
             builder.Append(_webHelper.GetStoreLocation(false) + "Plugins/PaymentMellatBank/PDTHandler");
@@ -209,6 +152,8 @@ namespace Nop.Plugin.Payments.MellatBank
                 ? "_cart"
                 : "_xclick";
             builder.AppendFormat("?cmd={0}", cmd);
+            builder.AppendFormat("&transactionid={0}", transactionid);
+            builder.AppendFormat("&orderid={0}", postProcessPaymentRequest.Order.Id);
             if (passProductNamesAndTotals)
             {
                 builder.AppendFormat("&upload=1");
@@ -339,15 +284,6 @@ namespace Nop.Plugin.Payments.MellatBank
 
             return builder.ToString();
         }
-        private PaymentGatewayClient GetMellatBankService()
-        {
-            System.Net.ServicePointManager.Expect100Continue = false;
-            BasicHttpsBinding binding = new BasicHttpsBinding();
-            EndpointAddress endpoint = new EndpointAddress(new Uri(GetMellatBankUrl()));
-
-            return new wsMellatBank.PaymentGatewayClient(binding
-                , endpoint);
-        }
 
         #endregion
 
@@ -371,35 +307,54 @@ namespace Nop.Plugin.Payments.MellatBank
         /// <param name="postProcessPaymentRequest">Payment info required for an order processing</param>
         public void PostProcessPayment(PostProcessPaymentRequest postProcessPaymentRequest)
         {
-            var callBackRedirect = GenerationCallBackUrl(postProcessPaymentRequest, _mellatBankPaymentSettings.PassProductNamesAndTotals);
+            Transaction t = new Transaction
+            {
+                TransactionId = Int64.Parse(DateTime.UtcNow.ToString("yyyyMMddhhmmssfff")),
+                Amount = Convert.ToInt64(postProcessPaymentRequest.Order.OrderTotal),
+                StatusPayment = "-100",
+                BankName = "Mellat",
+                SaleReferenceId = 0,
+                BuyDatetime = System.DateTime.Now,
+                UserID = 1,
+                TransactionFinished = false,
+            };
+            _transactionService.InsertTransaction(t);
+            var callBackRedirect = GenerationCallBackUrl(postProcessPaymentRequest, _mellatBankPaymentSettings.PassProductNamesAndTotals, t.TransactionId);
             if (callBackRedirect == null)
                 throw new Exception("MellatBank URL cannot be generated");
             //ensure URL doesn't exceed 2K chars. Otherwise, customers can get "too long URL" exception
             if (callBackRedirect.Length > 2048)
-                callBackRedirect = GenerationCallBackUrl(postProcessPaymentRequest, false);
+                callBackRedirect = GenerationCallBackUrl(postProcessPaymentRequest, false, t.TransactionId);
+
 
             string StatusSendRequest = string.Empty;
             string Status = string.Empty;
             string RefID = string.Empty;
-            StatusSendRequest = GetPdtPay(callBackRedirect, postProcessPaymentRequest.Order.Id, Convert.ToInt64(postProcessPaymentRequest.Order.OrderTotal), 0);
+            StatusSendRequest = _mellatPeyment.bpPayRequest(t.TransactionId, t.Amount, _storeContext.CurrentStore.Name, callBackRedirect);
             var returnValues = StatusSendRequest.Split(',');
-            if(returnValues.Length > 0)
+            if (returnValues.Length > 0)
             {
                 Status = returnValues[0];
             }
-            if(returnValues.Length > 1)
+            if (returnValues.Length > 1)
             {
                 RefID = returnValues[1];
             }
-            if (Status == "0")
+            string msg = string.Empty;
+            var reStatus = _mellatPeyment.GetPaymentStatus(Status, out msg);
+            if (reStatus == PaymentStatus.Authorized)
             {
-                _httpContext.Response.Redirect(GetMellatBankRedirect() + "?RefId="+RefID);
+                t.StatusPayment = Status;
+                t.ReferenceNumber = RefID;
+                _transactionService.UpdateTransaction(t);
+                _httpContext.Response.RedirectToRoute("Plugin.Payments.MellatBank.RedirectVPOS", new { refID = RefID });
             }
             else
             {
-                string msg = string.Empty;
-                MellatBankHelper.GetPaymentStatus(Status, out msg);
-                _httpContext.Response.RedirectToRoute("HomePage");                
+                t.StatusPayment = msg;
+                _transactionService.UpdateTransaction(t);
+                TransactionError tErr = new TransactionError { OrderId = postProcessPaymentRequest.Order.Id, ErrorId = Status, ErrorMessage = msg};
+                _httpContext.Response.RedirectToRoute("Plugin.Payments.MellatBank.ShowError", tErr);
             }
 
         }
@@ -563,10 +518,10 @@ namespace Nop.Plugin.Payments.MellatBank
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.AdditionalFee.Hint", "مبلغ هزینه مازاد جهت درج در فاکتور مشتری.");
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.TerminalId", "شماره درگاه بانک ملت");
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.TerminalId.Hint", "فعال کردن شماره درگاه بانک ملت");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.UserName", "شماره درگاه بانک ملت");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.UserName.Hint", "فعال کردن شماره درگاه بانک ملت");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.UserPassword", "شماره درگاه بانک ملت");
-            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.UserPassword.Hint", "فعال کردن شماره درگاه بانک ملت");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.UserName", "نام کاربری درگاه بانک ملت");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.UserName.Hint", "فعال کردن نام کاربری درگاه بانک ملت");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.UserPassword", "رمز درگاه بانک ملت");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.UserPassword.Hint", "فعال کردن رمز درگاه بانک ملت");
 
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.BusinessPhoneNumber", "شماره تلفن فروشگاه");
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.MellatBank.Fields.BusinessPhoneNumber.Hint", "فعال کردن شماره تلفن فروشگاه");
@@ -624,6 +579,58 @@ namespace Nop.Plugin.Payments.MellatBank
             this.DeletePluginLocaleResource("Plugins.Payments.MellatBank.RoundingWarning");
 
             base.Uninstall();
+        }
+
+        public void ManageSiteMap(Web.Framework.Menu.SiteMapNode rootNode)
+        {
+            string pluginMenuName = _localizationService.GetResource("Plugin.Payments.MellatBank.Admin.Menu.Title", languageId: _workContext.WorkingLanguage.Id, defaultValue: "Payment IR");
+
+            string settingsMenuName = _localizationService.GetResource("Plugin.Payments.MellatBank.Admin.Menu.Settings.Title", languageId: _workContext.WorkingLanguage.Id, defaultValue: "Settings");
+
+            string manageTransactionMenuName = _localizationService.GetResource("Plugin.Payments.MellatBank.Admin.Menu.Trabsaction.Title", languageId: _workContext.WorkingLanguage.Id, defaultValue: "Transaction");
+
+            const string adminUrlPart = "Plugins/";
+
+            var pluginMainMenu = new Web.Framework.Menu.SiteMapNode
+            {
+                Title = pluginMenuName,
+                Visible = true,
+                SystemName = "Payments.MellatBank-Main-Menu",
+                IconClass = "fa-genderless"
+            };
+
+            //pluginMainMenu.ChildNodes.Add(new Web.Framework.Menu.SiteMapNode
+            //{
+            //    Title = settingsMenuName,
+            //    Url = _webHelper.GetStoreLocation() + adminUrlPart + "PaymentIR/Settings",
+            //    Visible = true,
+            //    SystemName = "Payments.MellatBank-Settings-Menu",
+            //    IconClass = "fa-genderless"
+            //});
+
+            pluginMainMenu.ChildNodes.Add(new Web.Framework.Menu.SiteMapNode
+            {
+                Title = manageTransactionMenuName,
+                Url = _webHelper.GetStoreLocation() + adminUrlPart + "PaymentIR/List",
+                Visible = true,
+                SystemName = "Payments.MellatBank-Transaction-Menu",
+                IconClass = "fa-genderless"
+            });
+
+
+            //string pluginDocumentationUrl = "https://github.com/SevenSpikes/api-plugin-for-nopcommerce";
+
+            //pluginMainMenu.ChildNodes.Add(new Web.Framework.Menu.SiteMapNode
+            //{
+            //    Title = _localizationService.GetResource("Plugins.Api.Admin.Menu.Docs.Title"),
+            //    Url = pluginDocumentationUrl,
+            //    Visible = true,
+            //    SystemName = "Api-Docs-Menu",
+            //    IconClass = "fa-genderless"
+            //});//TODO: target="_blank"
+
+
+            rootNode.ChildNodes.Add(pluginMainMenu);
         }
 
         #endregion

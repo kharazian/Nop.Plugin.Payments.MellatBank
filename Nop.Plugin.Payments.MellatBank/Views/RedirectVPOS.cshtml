@@ -1,0 +1,33 @@
+﻿@{
+    Layout = ViewNames.ColumnsOneLayout;
+}
+@model System.String
+@using Nop.Plugin.Payments.MellatBank.Constants
+
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @action = "https://bpm.shaparak.ir/pgwchannel/startpay.mellat" }))
+{
+
+
+     <div class="content-header clearfix">
+        <h1 class="pull-left">
+            انتقال به صفحه بانک
+
+            <small><i class="fa fa-arrow-circle-left"></i>
+                <div class="TextDescription">
+                    در صورتی که اطلاعات ثبت شده را مورد تایید است جهت تکمیل فرایند خرید بر روی گزینه
+                    پرداخت کلیک نمایید
+
+                </div>
+            </small>
+        </h1>
+        <div class="pull-right">
+            <input type="hidden" value='@Model' id="RefId" name="RefId">
+            <button type="submit" class="btn bg-blue">
+                <i class="fa fa-floppy-o"></i>
+                پرداخت
+            </button>
+        </div>
+    </div>
+
+}
