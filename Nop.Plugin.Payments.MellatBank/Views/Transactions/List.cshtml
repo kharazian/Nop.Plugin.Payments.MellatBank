@@ -1,0 +1,132 @@
+﻿@{
+    Layout = ViewNames.AdminLayout;
+
+    //page title
+    ViewBag.Title = T("Plugins.Api.Admin.Page.Clients.Title").Text;
+    //active menu item (system name)
+    Html.SetActiveMenuItemSystemName("Payments.MellatBank-Transaction-Menu");
+}
+
+@Html.AntiForgeryToken()
+
+@using Nop.Core.Domain.Common;
+@using Nop.Core.Infrastructure;
+@using Nop.Plugin.Payments.MellatBank.Constants
+@using Nop.Web.Framework.UI
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @T("Plugins.Api.Admin.Page.Clients.Title")
+    </h1>
+    <div class="pull-right">
+        <a href="Create" class="btn bg-blue">
+            <i class="fa fa-plus-square"></i>
+            @T("Admin.Common.AddNew")
+        </a>
+    </div>
+</div>
+
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="api-transaction-grid"></div>
+
+                    <script>
+                        $(document).ready(function () {
+                            $("#api-transaction-grid").kendoGrid({
+                                dataSource: {
+                                    type: "json",
+                                    transport: {
+                                        read: {
+                                            url: "@Url.RouteUrl("Plugin.PaymentIR.ManageTransactions.List")",
+                                            type: "POST",
+                                            dataType: "json",
+                                            data: addAntiForgeryToken
+                                        }
+                                    },
+                                    schema: {
+                                        data: "Data",
+                                        total: "Total",
+                                        errors: "Errors"
+                                    },
+                                    error: function (e) {
+                                        display_kendoui_grid_error(e);
+                                        // Cancel the changes
+                                        this.cancelChanges();
+                                    },
+                                    pageSize: 10,
+                                    serverPaging: true,
+                                    serverFiltering: true,
+                                    serverSorting: true
+                                },
+                                pageable: {
+                                    refresh: true,
+                                    pageSizes: 15,
+                                    @Html.Partial("_GridPagerMessages")
+                                },
+                                editable: {
+                                    confirmation: "@T("Admin.Common.DeleteConfirmation")",
+                                    mode: "inline"
+                                },
+                                scrollable: false,
+                                columns: [
+                                    {
+                                        field: "TransactionId",
+                                        title: "شماره تراکنش"
+                                    }, {
+                                        field: "ReferenceNumber",
+                                        title: "شماره ارجاع"
+                                    }, {
+                                        field: "SaleReferenceId",
+                                        title: "شماره فروش"
+                                    }, {
+                                        field: "StatusPayment",
+                                        title: "وضعیت پرداخت"
+                                    }, {
+                                        field: "TransactionFinished",
+                                        title: "اتمام تراکنش",
+                                    }, {
+                                        field: "Amount",
+                                        title: "مبلغ تراکنش",
+                                    }, {
+                                        field: "BankName",
+                                        title: "نام بانک",
+                                    }, {
+                                        field: "UserID",
+                                        title: "شماره مشتری",
+                                        template: '<a href="@Url.Content("~/Admin/Customer/Edit/")#=UserID#">#:UserID#</a>'
+                                    }, {
+                                        field: "BuyDatetime",
+                                        title: "تاریخ تراکنش",
+                                        type: "date",
+                                        format: "{0:G}"
+                                    }
+                                , {
+                                    field: "Id",
+                                    title: "ویرایش",
+                                    width: 100,
+                                    template: '<a href="Edit/#=Id#">@T("Admin.Common.Edit")</a>'
+                                }
+                                ]
+                            });
+                        });
+                    </script>
+                    <script type="text/javascript">
+
+
+                        function additionalData() {
+                            var data = {
+                                CreatedOnFrom: 1
+                            };
+                            addAntiForgeryToken(data);
+                            return data;
+                        }
+                    </script>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
